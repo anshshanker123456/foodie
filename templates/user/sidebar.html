@@ -1,0 +1,30 @@
+<div class="list-group mb-2">
+  <div class="list-group-item d-flex justify-content-between align-items-center">
+   {{user.username}}
+   {% if user.profile.role in "rider" or "owner"   %}
+     <span class="badge badge-primary badge-pill">{{user.profile.role}}</span>
+   {% endif %}
+  </div>
+</div>
+
+
+{% if  user.profile.role == 'owner' %}
+<div class="list-group">
+  <a href="{% url 'restaurant_details'%}" class="list-group-item list-group-item-action">
+   Restaurent Details
+  </a>
+  <a href="{% url 'view_menu'%}" class="list-group-item list-group-item-action">View Menu</a>
+  <a href="{% url 'add_menu'%}" class="list-group-item list-group-item-action">Add menu</a>
+  <a href="{% url 'revenue'%}" class="list-group-item list-group-item-action">Total revenue</a>
+</div>
+{% elif user.profile.role == 'rider'%}
+
+<div class="list-group">
+  <a href="{% url 'get_order'%}" class="list-group-item list-group-item-action">Get Order</a>
+  <a href="{% url 'delivery_history'%}" class="list-group-item list-group-item-action">Order History</a>
+</div>
+{% else %}
+<div class="list-group">
+  <a href="{% url 'order_history'%}" class="list-group-item list-group-item-action">Order History</a>
+</div>
+{% endif  %}

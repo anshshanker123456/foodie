@@ -1,0 +1,21 @@
+{% extends 'user/profile.html' %}
+{% load static %}
+{% block dashboardContentParent %}
+<form class="needs-validation" class="text-center" method="post" action="{% url 'delete_menu'  %}">
+    {% csrf_token %}
+      <div class="card mb-4 shadow-sm mx-auto" style="width: 18rem;">
+        {% if item.image and item.image.url %}
+            <img src="{{item.image.url}}" class="card-img-top" alt="image">
+        {% else %}
+            <img src="/media/default.svg" class="card-img-top" alt="image">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">Delete Item</h5>
+            <p class="card-text"> Please Confirm deletion of {{item.name}} with price {{item.price}} </p>
+            <input type="hidden" value="{{item.id}}" name="id"> 
+            <input class="btn px-4" type="submit" value="yes" name="confirm">
+            <a href="{% url 'view_menu' %}" class="btn btn-danger no-round"> Cancel </a>
+        </div>
+    </div>
+</form>
+{% endblock dashboardContentParent %}

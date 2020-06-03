@@ -1,0 +1,18 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="album py-5">
+    
+    {% if menuItems is  None %}
+        <div class="mx-auto">
+            <div class="mx-auto card text-white bg-dark mb-3" style="max-width: 25rem;">
+                <div class="card-header">New Offer!</div>
+                <div class="card-body">
+                  <h5 class="card-title">HBTU2022</h5>
+                  <p class="card-text">Use this to get a 50% discount on every order.</p>
+                </div>
+              </div>
+        </div>
+    {% endif %} 
+</div>
+{% endblock content %}

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load cart_tags %}
+{% block content %}
+<div class="cart py-5">
+    <div class="container max-900">
+
+    {% if not cartItems  %}
+        <div class="text-center"> 
+        <h5>Your Shopping Cart is empty. Please select atlease one item to proceed. </h5>
+        <div class="my-2 my-md-0 mr-md-3">
+            <a class="p-2 mr-3 text-dark" href="/">Home</a>
+            <a class="p-2 text-dark" href="/specials">Specials</a>
+            <a class="p-2 text-dark" href="/offers">Offers</a> 
+        </div> 
+        </div>
+    {% else %}
+    
+    <div class="row">
+        
+            <div class="col-md-8 order-md-1">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Your cart</span>
+                    <span class="badge badge-secondary badge-pill">{{cartItems | length }}</span>
+                </h4>
+                <ul class="list-group mb-3">
+                   {% for item in cartItems %}
+                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <h6 class="my-0">{{item.name| title}}</h6>
+                        <small class="text-muted">{{item.description}}</small>
+                        <h6 class="text-muted">{{item.restaurantName | title}}</h6>
+                        <h6 class="text-muted">{{item.quantity}}</h6>
+                    </div>
+                    <div>
+                    <span class="text-muted"><i class="fas fa-rupee-sign"></i> {{item.price}}</span>
+                     <div><a href="{% url 'remove_item_from_cart' %}?id={{item.id}}" class="badge badge-danger">remove</a></div>
+                    </div>
+                   
+                    </li>
+                     {% endfor %}
+                    
+                </ul>
+            
+            </div>
+        <div class="price-split col-md-4 order-md-2 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">PRICE DETAILS</span> 
+            </h4>
+             
+            <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                <div>
+                    <h6 class="my-0">Price ({{cartItems | calculateTotalQuantity }} items)</h6> 
+                </div>
+                <span class="text-muted"><i class="fas fa-rupee-sign"></i> {{ cartItems | calculatePrice:'total' }} </span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                <div>
+                    <h6 class="my-0">Delivery</h6> 
+                </div>
+                <span class="text-muted"><i class="fas fa-rupee-sign"></i> {{ cartItems | calculatePrice:'total_delivery' }} </span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <h6 class="my-0">Discount</h6> 
+                    </div>
+                    <span class="text-muted"><i class="fas fa-rupee-sign"></i> 
+                        {{ cartItems | calculatePrice:'discount' }} 
+                        ( {{ cartItems | calculatePrice:'coupon' }} %) 
+                    </span>
+                </li>
+ 
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                <div>
+                    <h6 class="my-0">Total Payable</h6> 
+                </div>
+                <span class="text-muted"><i class="fas fa-rupee-sign"></i> {{ cartItems | calculatePrice:'payable' }}</span>
+                </li>
+                <li class="list-group-item">
+                    {%   if  appliedCoupon   %}
+                        <form action="{% url 'applycoupon' %}" method="post">
+                            <div class="input-group">
+                                <input type="text" name="id" class="form-control" placeholder="Coupon" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    {% csrf_token %}
+                                    <button class="btn btn-success" type="submit">Apply Coupon</button>
+                                </div>                    
+                            </div>    
+                        </form>
+                    {% else %}
+                        <a href="{% url 'removecoupon'%}" class="btn btn-danger">Remove Coupon</a>
+                    {% endif %}
+                    </li>
+                <form class="card p-2" action="{% url 'payments' %}" method="post">
+                {% csrf_token %}
+                    <input value="{{ cartItems | calculatePrice:'payable' }}" type="hidden" name="total_amount"/>
+                        <button type="submit" class="btn round btn-danger">Proceed to checkout</button>
+                </form>
+            </ul> 
+             
+        </div> 
+    </div>
+    {% endif %} 
+</div>
+</div>
+{% endblock content %}
